@@ -25,7 +25,8 @@ subject = "Ultra Signup Update"
 races = [("Quicksilver 100K 2016", 34515),
 	("Pine to Palm 2016", 36634),
 	("Miwok 100K 2016", 33379),
-	("Lake Sonoma 50 Miler 2016", 32787)
+	("Lake Sonoma 50 Miler 2016", 32787),
+	("Night Sweats Trail Run Spring", 37027)
 ]
 
 # Loop through races and gather entrant count
