@@ -24,14 +24,14 @@ subject = "Ultra Signup Update"
 
 # Loop through races and gather entrant count
 for name,id in race_json.iteritems():
-	display = Display(visible=0, size=(1024, 768))
-	display.start()
-	driver = webdriver.Firefox()
-	driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
-	entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-	msg = msg + "\n" + name + ": " + entrant_element.text
-	driver.close()
-	display.stop()
+    display = Display(visible=0, size=(1024, 768))
+    display.start()
+    driver = webdriver.Firefox()
+    driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
+    entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
+    msg = msg + "\n\n" + name + ": " + entrant_element.text
+    driver.close()
+    display.stop()
 
 # Prepare email
 msg = """\
