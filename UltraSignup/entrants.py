@@ -8,12 +8,12 @@ from selenium import webdriver
 display = Display(visible=0, size=(1024, 768))
 display.start()
 
-# Quicksilver 100K 2016
-driver = webdriver.Firefox()
-driver.get("https://ultrasignup.com/entrants_event.aspx?did=34516")
-entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-print "Quicksilver 100K: " + entrant_element.text
-driver.close()
+# # Quicksilver 100K 2016
+# driver = webdriver.Firefox()
+# driver.get("https://ultrasignup.com/entrants_event.aspx?did=34516")
+# entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
+# print "Quicksilver 100K: " + entrant_element.text
+# driver.close()
 
 # Pine to Palm 2016
 driver = webdriver.Firefox()
