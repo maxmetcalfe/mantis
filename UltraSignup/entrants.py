@@ -24,7 +24,7 @@ subject = "Ultra Signup Update"
 # Race list. Name + event ID
 races = [("Lake Sonoma 50 Miler 2016", 32787),
 	("Miwok 100K 2016", 33379),
-	("Night Sweats Trail Run Spring", 37027)
+	("Night Sweats Trail Run Spring", 37027),
 	("Pine to Palm 2016", 36634),
 	("Quicksilver 100K 2016", 34515)
 ]
