@@ -5,15 +5,16 @@ from pyvirtualdisplay import Display
 from selenium import webdriver
 import argparse
 import smtplib
+import json
 
 parser = argparse.ArgumentParser()
-
-# To Do - make this secure :)
 parser.add_argument( "-u", "--user", help="gmail username", required=True )
 parser.add_argument( "-p", "--password", help="gmail password", required=True  )
 args = parser.parse_args()
-username = args.user
-password = args.password
+
+# Load race JSON from file
+with open('races.json') as race_file:
+    race_json = json.load(race_file)
 
 # Email settings
 fromaddr = args.user
@@ -21,16 +22,8 @@ toaddrs  = 'm.maxmetcalfe@gmail.com'
 msg = ""
 subject = "Ultra Signup Update"
 
-# Race list. Name + event ID
-races = [("Lake Sonoma 50 Miler 2016", 32787),
-	("Miwok 100K 2016", 33379),
-	("Night Sweats Trail Run Spring", 37027),
-	("Pine to Palm 2016", 36634),
-	("Quicksilver 100K 2016", 34515)
-]
-
 # Loop through races and gather entrant count
-for name, id in races:
+for name,id in race_json.iteritems():
 	display = Display(visible=0, size=(1024, 768))
 	display.start()
 	driver = webdriver.Firefox()
@@ -50,8 +43,8 @@ Subject: %s
 """ % (fromaddr, toaddrs, subject, msg)
 
 # Send email
-server = smtplib.SMTP('smtp.gmail.com:587')
-server.starttls()
-server.login(args.user,args.password)
-server.sendmail(fromaddr, toaddrs, msg)
-server.quit()
+# server = smtplib.SMTP('smtp.gmail.com:587')
+# server.starttls()
+# server.login(args.user,args.password)
+# server.sendmail(fromaddr, toaddrs, msg)
+# server.quit()
