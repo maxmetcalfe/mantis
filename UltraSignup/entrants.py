@@ -43,7 +43,7 @@ Subject: %s
 %s
 """ % (fromaddr, toaddrs, subject, msg)
 
-Send email
+#Send email
 server = smtplib.SMTP('smtp.gmail.com:587')
 server.starttls()
 server.login(args.user,args.password)
