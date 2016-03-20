@@ -16,7 +16,7 @@ username = args.user
 password = args.password
 
 # Email settings
-fromaddr = args.username
+fromaddr = args.user
 toaddrs  = 'm.maxmetcalfe@gmail.com'
 msg = ""
 subject = "Ultra Signup Update"
