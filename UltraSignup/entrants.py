@@ -22,11 +22,11 @@ msg = ""
 subject = "Ultra Signup Update"
 
 # Race list. Name + event ID
-races = [("Quicksilver 100K 2016", 34515),
-	("Pine to Palm 2016", 36634),
+races = [("Lake Sonoma 50 Miler 2016", 32787),
 	("Miwok 100K 2016", 33379),
-	("Lake Sonoma 50 Miler 2016", 32787),
 	("Night Sweats Trail Run Spring", 37027)
+	("Pine to Palm 2016", 36634),
+	[("Quicksilver 100K 2016", 34515)
 ]
 
 # Loop through races and gather entrant count
@@ -36,7 +36,7 @@ for name, id in races:
 	driver = webdriver.Firefox()
 	driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
 	entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-	msg = msg + "\n" + name + " " + entrant_element.text
+	msg = msg + "\n" + name + ": " + entrant_element.text
 	driver.close()
 	display.stop()
 
