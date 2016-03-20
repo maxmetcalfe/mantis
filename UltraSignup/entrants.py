@@ -21,25 +21,23 @@ toaddrs  = 'm.maxmetcalfe@gmail.com'
 msg = ""
 subject = "Ultra Signup Update"
 
-# Quicksilver 100K 2016
-display = Display(visible=0, size=(1024, 768))
-display.start()
-driver = webdriver.Firefox()
-driver.get("https://ultrasignup.com/entrants_event.aspx?did=34516")
-entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-msg = msg + "\n" + "QuickSilver 100K: " + entrant_element.text
-driver.close()
-display.stop()
+# Race list. Name + event ID
+races = [("Quicksilver 100K 2016", 34515),
+	("Pine to Palm 2016", 36634),
+	("Miwok 100K 2016", 33379),
+	("Lake Sonoma 50 Miler 2016", 32787)
+]
 
-# Pine to Palm 2016
-display = Display(visible=0, size=(1024, 768))
-display.start()
-driver = webdriver.Firefox()
-driver.get("https://ultrasignup.com/entrants_event.aspx?did=36634")
-entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-msg = msg + "\n" + "Pine to Palm 100: " + entrant_element.text
-driver.close()
-display.stop()
+# Loop through races and gather entrant count
+for name, id in races:
+	display = Display(visible=0, size=(1024, 768))
+	display.start()
+	driver = webdriver.Firefox()
+	driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
+	entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
+	msg = msg + "\n" + name + " " + entrant_element.text
+	driver.close()
+	display.stop()
 
 # Prepare email
 msg = """\
@@ -50,6 +48,7 @@ Subject: %s
 %s
 """ % (fromaddr, toaddrs, subject, msg)
 
+# Send email
 server = smtplib.SMTP('smtp.gmail.com:587')
 server.starttls()
 server.login(args.user,args.password)
