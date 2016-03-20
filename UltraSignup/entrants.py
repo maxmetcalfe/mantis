@@ -6,6 +6,7 @@ from selenium import webdriver
 import argparse
 import smtplib
 import json
+import collections
 
 parser = argparse.ArgumentParser()
 parser.add_argument( "-u", "--user", help="gmail username", required=True )
@@ -22,15 +23,18 @@ toaddrs  = 'm.maxmetcalfe@gmail.com'
 msg = ""
 subject = "Ultra Signup Update"
 
+# Sort JSON alphabetically by name
+race_json_sorted = collections.OrderedDict(sorted(race_json.items()))
+
 # Loop through races and gather entrant count
-for name,id in race_json.iteritems():
+for name,id in race_json_sorted.iteritems():
     print name,id
     display = Display(visible=0, size=(1024, 768))
     display.start()
     driver = webdriver.Firefox()
     driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
     entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-    msg = msg + "\n\n" + name + ": " + entrant_element.text
+    msg = msg + "\n\n" + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id)
     driver.close()
     display.stop()
 
@@ -43,7 +47,7 @@ Subject: %s
 %s
 """ % (fromaddr, toaddrs, subject, msg)
 
-#Send email
+# Send email
 server = smtplib.SMTP('smtp.gmail.com:587')
 server.starttls()
 server.login(args.user,args.password)
