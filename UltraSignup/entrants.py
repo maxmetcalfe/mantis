@@ -52,5 +52,5 @@ Subject: %s
 server = smtplib.SMTP('smtp.gmail.com:587')
 server.starttls()
 server.login(args.user,args.password)
-server.sendmail(fromaddr, toaddrs, msg)
+server.sendmail(fromaddr, ",".join(args.recipients), msg)
 server.quit()
