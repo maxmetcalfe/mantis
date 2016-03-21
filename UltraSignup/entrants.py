@@ -35,11 +35,7 @@ for name,id in race_json_sorted.iteritems():
     driver = webdriver.Firefox()
     driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
     entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-    newline = "\n\n"
-    # Remove newline on first line
-    if first:
-        newline = ""
-    msg = msg + newline + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id)
+    msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
     driver.close()
     display.stop()
 
