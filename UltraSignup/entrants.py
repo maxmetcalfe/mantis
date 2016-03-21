@@ -11,6 +11,7 @@ import collections
 parser = argparse.ArgumentParser()
 parser.add_argument( "-u", "--user", help="gmail username", required=True )
 parser.add_argument( "-p", "--password", help="gmail password", required=True  )
+parser.add_argument( "-r", "--recipients", nargs="+", help="recipients", required=True  )
 args = parser.parse_args()
 
 # Load race JSON from file
@@ -19,7 +20,6 @@ with open('races.json') as race_file:
 
 # Email settings
 fromaddr = args.user
-toaddrs  = 'm.maxmetcalfe@gmail.com'
 msg = ""
 subject = "Ultra Signup Digest"
 
@@ -46,7 +46,7 @@ To: %s
 Subject: %s
 
 %s
-""" % (fromaddr, toaddrs, subject, msg)
+""" % (fromaddr, ", ".join(args.recipients), subject, msg)
 
 # Send email
 server = smtplib.SMTP('smtp.gmail.com:587')
