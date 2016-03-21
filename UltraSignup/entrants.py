@@ -21,11 +21,12 @@ with open('races.json') as race_file:
 fromaddr = args.user
 toaddrs  = 'm.maxmetcalfe@gmail.com'
 msg = ""
-subject = "Ultra Signup Update"
+subject = "Ultra Signup Digest"
 
 # Sort JSON alphabetically by name
 race_json_sorted = collections.OrderedDict(sorted(race_json.items()))
 
+first = True
 # Loop through races and gather entrant count
 for name,id in race_json_sorted.iteritems():
     print name,id
@@ -34,7 +35,11 @@ for name,id in race_json_sorted.iteritems():
     driver = webdriver.Firefox()
     driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
     entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-    msg = msg + "\n\n" + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id)
+    newline = "\n\n"
+    # Remove newline on first line
+    if first:
+        newline = ""
+    msg = msg + newline + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id)
     driver.close()
     display.stop()
 
