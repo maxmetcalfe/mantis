@@ -7,11 +7,12 @@ import argparse
 import smtplib
 import json
 import collections
+import string
 
 parser = argparse.ArgumentParser()
 parser.add_argument( "-u", "--user", help="gmail username", required=True )
 parser.add_argument( "-p", "--password", help="gmail password", required=True  )
-parser.add_argument( "-r", "--recipients", nargs="+", help="recipients", required=True  )
+parser.add_argument( "-r", "--recipients", help="recipients", required=True  )
 args = parser.parse_args()
 
 # Load race JSON from file
@@ -39,6 +40,9 @@ for name,id in race_json_sorted.iteritems():
     driver.close()
     display.stop()
 
+# Make list out of args.recipients string
+recipients = string.split(args.recipients, ",")
+
 # Prepare email
 msg = """\
 From: %s
@@ -46,11 +50,11 @@ To: %s
 Subject: %s
 
 %s
-""" % (fromaddr, ", ".join(args.recipients), subject, msg)
+""" % (fromaddr, ", ".join(recipients), subject, msg)
 
 # Send email
 server = smtplib.SMTP('smtp.gmail.com:587')
 server.starttls()
 server.login(args.user,args.password)
-server.sendmail(fromaddr, ",".join(args.recipients), msg)
+server.sendmail(fromaddr, recipients, msg)
 server.quit()
