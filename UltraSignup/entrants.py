@@ -41,7 +41,7 @@ for name,id in race_json_sorted.iteritems():
     driver.close()
     display.stop()
     # Need to kill each Firefox process
-    os.system("kilall firefox")
+    os.system("killall firefox")
 
 # Make list out of args.recipients string
 recipients = string.split(args.recipients, ",")
