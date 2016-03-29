@@ -8,6 +8,7 @@ import smtplib
 import json
 import collections
 import string
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument( "-u", "--user", help="gmail username", required=True )
@@ -39,6 +40,8 @@ for name,id in race_json_sorted.iteritems():
     msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
     driver.close()
     display.stop()
+    # Need to kill each Firefox process
+    os.system("kilall firefox")
 
 # Make list out of args.recipients string
 recipients = string.split(args.recipients, ",")
