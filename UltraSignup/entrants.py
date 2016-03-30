@@ -32,32 +32,32 @@ first = True
 # Loop through races and gather entrant count
 for name,id in race_json_sorted.iteritems():
     print name,id
-    display = Display(visible=0, size=(1024, 768))
-    display.start()
-    driver = webdriver.Firefox()
-    driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
-    entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-    msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
-    driver.close()
-    display.stop()
+    #display = Display(visible=0, size=(1024, 768))
+    #display.start()
+    #driver = webdriver.Firefox()
+    #driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
+    #entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
+    #msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
+    #driver.close()
+    #display.stop()
     # Need to kill each Firefox process
-    os.system("killall firefox")
-
-# Make list out of args.recipients string
-recipients = string.split(args.recipients, ",")
-
-# Prepare email
-msg = """\
-From: %s
-To: %s
-Subject: %s
-
-%s
-""" % (fromaddr, ", ".join(recipients), subject, msg)
-
-# Send email
-server = smtplib.SMTP('smtp.gmail.com:587')
-server.starttls()
-server.login(args.user,args.password)
-server.sendmail(fromaddr, recipients, msg)
-server.quit()
+#    os.system("killall firefox")
+#
+## Make list out of args.recipients string
+#recipients = string.split(args.recipients, ",")
+#
+## Prepare email
+#msg = """\
+#From: %s
+#To: %s
+#Subject: %s
+#
+#%s
+#""" % (fromaddr, ", ".join(recipients), subject, msg)
+#
+## Send email
+#server = smtplib.SMTP('smtp.gmail.com:587')
+#server.starttls()
+#server.login(args.user,args.password)
+#server.sendmail(fromaddr, recipients, msg)
+#server.quit()
