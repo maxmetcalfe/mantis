@@ -36,8 +36,11 @@ first = True
 # Loop through races and gather entrant count
 for name,id in race_json_sorted.iteritems():
     print name,id
-    driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
-    entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
+    try:
+        driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
+        entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
+    except:
+        print "Unable to localte element: " + name + "," + id
     msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
 
 driver.close()
