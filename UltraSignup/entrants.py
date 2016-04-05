@@ -30,7 +30,7 @@ race_json_sorted = collections.OrderedDict(sorted(race_json.items()))
 
 display = Display(visible=0, size=(1024, 768))
 display.start()
-driver = webdriver.Chrome()
+driver = webdriver.Firefox()
 
 first = True
 # Loop through races and gather entrant count
