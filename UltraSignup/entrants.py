@@ -41,12 +41,10 @@ for name,id in race_json_sorted.iteritems():
         entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
     	msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
     except:
-        print "Unable to localte element: " + name + "," + str(id)
+        print "Unable to locate element: " + name + "," + str(id)
 
 driver.close()
 display.stop()
-# Need to kill each Firefox process
-#os.system("killall firefox")
 
 # Make list out of args.recipients string
 recipients = string.split(args.recipients, ",")
