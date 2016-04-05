@@ -40,7 +40,7 @@ for name,id in race_json_sorted.iteritems():
         driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
         entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
     except:
-        print "Unable to localte element: " + name + "," + id
+        print "Unable to localte element: " + name + "," + str(id)
     msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
 
 driver.close()
