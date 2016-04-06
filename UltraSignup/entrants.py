@@ -43,6 +43,10 @@ for name,id in race_json_sorted.iteritems():
     except:
         print "Unable to locate element: " + name + "," + str(id)
 
+    # Wait for a moment
+    print "Waiting..."
+    driver.implicitly_wait(3)
+
 driver.close()
 display.stop()
 
