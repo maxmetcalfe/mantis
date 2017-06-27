@@ -10,6 +10,7 @@ import json
 import collections
 import string
 import os
+import time
 
 url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?results=true&Year={0}&Category=&Club=&StartRecord={1}"
 
@@ -30,7 +31,7 @@ for i in range(0, limit, increment):
         print "Unable to locate page " + url
 
     print "Waiting..."
-    driver.implicitly_wait(3)
+    time.sleep(5)
 
 driver.close()
 display.stop()
