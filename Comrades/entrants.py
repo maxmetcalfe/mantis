@@ -14,7 +14,8 @@ url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?result
 
 display = Display(visible=0, size=(1024, 768))
 display.start()
-driver = webdriver.Firefox()
+binary = FirefoxBinary("/usr/bin/firefox")
+driver = webdriver.Firefox(firefox_binary=binary)
 
 limit = 40000
 increment = 100
