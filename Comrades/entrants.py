@@ -3,6 +3,7 @@
 
 from pyvirtualdisplay import Display
 from selenium import webdriver
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import argparse
 import smtplib
 import json
