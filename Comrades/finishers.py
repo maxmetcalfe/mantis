@@ -15,7 +15,7 @@ driver = webdriver.Firefox(firefox_binary=binary)
 
 # Define constants - hardcoded for now.
 # To Do: Move these into Jenkins
-limit = 300
+limit = 500
 increment = 100
 year = "2017"
 
@@ -24,6 +24,7 @@ results = []
 
 # Loop through result pages
 for i in range(0, limit, increment):
+    print i
     url = url.format("2017", i)
     print "Gathering data from: " + url
     try:
@@ -60,7 +61,10 @@ csv_file.write("rank, race_no, name, nation, club, time, medal, category\n")
 
 for r in results:
     print r
-    csv_file.write(str(r) + "\n")
+    try:
+        csv_file.write(r[0] + "," + r[1] + "," + r[2] + "," + r[3] + "," + r[4] + "," + r[5] + "," + r[6] + "," + r[7] + "\n")
+    except:
+        print "Writing this result to the file failed."
 
 csv_file.close()
 
