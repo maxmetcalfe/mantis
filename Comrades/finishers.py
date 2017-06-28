@@ -25,12 +25,12 @@ results = []
 # Loop through result pages
 for i in range(0, limit, increment):
     print i
-    url = url.format("2017", i)
-    print "Gathering data from: " + url
+    formatted_url = url.format("2017", str(i))
+    print "Gathering data from: " + formatted_url
     try:
-        driver.get(url)
+        driver.get(formatted_url)
     except:
-        print "Unable to locate page " + url
+        print "Unable to locate page " + formatted_url
 
     if driver:
     	odd = driver.find_elements_by_class_name("rowdd")
@@ -44,7 +44,8 @@ for i in range(0, limit, increment):
     			results.append(c.text)
 
             # Store the result in the results array
-	        results.append(result)
+            print result
+            results.append(result)
 
     # Wait for a bit to allow the browser to load.
     print "Waiting..."
@@ -60,9 +61,8 @@ csv_file = open("comrades_" + year + ".csv", "w")
 csv_file.write("rank, race_no, name, nation, club, time, medal, category\n")
 
 for r in results:
-    print r
     try:
-        csv_file.write(r[0] + "," + r[1] + "," + r[2] + "," + r[3] + "," + r[4] + "," + r[5] + "," + r[6] + "," + r[7] + "\n")
+        csv_file.write(r + "\n")
     except:
         print "Writing this result to the file failed."
 
