@@ -60,7 +60,7 @@ csv_file.write("rank, race_no, name, nation, club, time, medal, category\n")
 
 for r in results:
     print r
-	csv_file.write(r[0] + "," + r[1] + "," + r[2] + "," + r[3] + "," + r[4] + "," + r[5] + "," + r[6] + "," + r[7] + "\n")
+    csv_file.write(r[0] + "," + r[1] + "," + r[2] + "," + r[3] + "," + r[4] + "," + r[5] + "," + r[6] + "," + r[7] + "\n")
 
 csv_file.close()
 
