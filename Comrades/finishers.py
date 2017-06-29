@@ -41,7 +41,7 @@ for i in range(0, limit, increment):
             cells = r.find_elements_by_class_name("cell")
             for c in cells:
                 t=unicode(c.text)
-                t.encode("ascii")
+                t.encode("utf-8")
                 results.append(t)
 
             # Store the result in the results array
