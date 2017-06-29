@@ -4,6 +4,7 @@
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from unidecode import unidecode
 import time
 
 # Define the driver / url
@@ -24,7 +25,6 @@ results = []
 
 # Loop through result pages
 for i in range(0, limit, increment):
-    print i
     formatted_url = url.format("2017", str(i))
     print "Gathering data from: " + formatted_url
     try:
@@ -36,14 +36,14 @@ for i in range(0, limit, increment):
     	odd = driver.find_elements_by_class_name("rowdd")
     	even = driver.find_elements_by_class_name("roweven")
     	rows = odd + even
-        print rows
         # Loop through rows and cells to gather data
         for r in rows:
             result = []
             cells = r.find_elements_by_class_name("cell")
             for c in cells:
-                print c.text
-            	results.append(c.text)
+                t=unidecode(c.text)
+                t.encode("ascii")
+                results.append(t)
 
             # Store the result in the results array
             results.append(result)
