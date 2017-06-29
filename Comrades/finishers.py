@@ -36,15 +36,16 @@ for i in range(0, limit, increment):
     	odd = driver.find_elements_by_class_name("rowdd")
     	even = driver.find_elements_by_class_name("roweven")
     	rows = odd + even
+        print rows
         # Loop through rows and cells to gather data
-    	for r in rows:
-    		result = []
-    		cells = r.find_elements_by_class_name("cell")
-    		for c in cells:
-    			results.append(c.text)
+        for r in rows:
+            result = []
+            cells = r.find_elements_by_class_name("cell")
+            for c in cells:
+                print c.text
+            	results.append(c.text)
 
             # Store the result in the results array
-            print result
             results.append(result)
 
     # Wait for a bit to allow the browser to load.
