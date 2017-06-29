@@ -40,7 +40,7 @@ for i in range(0, limit, increment):
             result = []
             cells = r.find_elements_by_class_name("cell")
             for c in cells:
-                t=c.text)
+                t=c.text
                 t.encode("ascii")
                 results.append(t)
 
