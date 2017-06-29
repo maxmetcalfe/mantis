@@ -4,6 +4,7 @@
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from unidecode import unidecode
 import time
 
 # Define the driver / url
@@ -40,7 +41,7 @@ for i in range(0, limit, increment):
             result = []
             cells = r.find_elements_by_class_name("cell")
             for c in cells:
-                t=c.text
+                t=unidecode(c.text)
                 t.encode("ascii")
                 results.append(t)
 
