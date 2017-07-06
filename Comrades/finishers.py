@@ -5,6 +5,7 @@ from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import time
+import codecs
 
 # Define the driver / url
 url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?results=true&Year={0}&Category=&Club=&StartRecord={1}"
@@ -55,7 +56,7 @@ for i in range(0, limit, increment):
 
 print "Writing results to file..."
 print str(len(results)) + " results found."
-csv_file = open("comrades_" + year + ".csv", "w")
+csv_file = codecs.open("comrades_" + year + ".csv", "w", encoding="utf-8")
 
 # Write header
 csv_file.write("rank, race_no, name, nation, club, time, medal, category\n")
