@@ -62,10 +62,7 @@ csv_file = codecs.open("comrades_" + year + ".csv", "w", encoding="utf-8")
 csv_file.write("rank, race_no, name, nation, club, time, medal, category\n")
 
 for r in results:
-    try:
-        csv_file.write(r + "\n")
-    except:
-        print "Writing this result to the file failed."
+    csv_file.write(r + "\n")
 
 csv_file.close()
 
