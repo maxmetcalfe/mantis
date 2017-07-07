@@ -39,7 +39,7 @@ def get_age(year, race_no):
     return int(year) - int(birth_year)
 
 def encode(text):
-    return t=unicode(c.text).encode("utf-8")
+    return unicode(c.text).encode("utf-8")
 
 # Initialize empty results array
 results = []
@@ -64,16 +64,16 @@ for i in range(0, args.limit, args.increment):
             for i, c in enumerate(cells):
                 if i == 0:
                     place = c.text.split(" ")[0]
-                else if i == 1:
+                elif i == 1:
                     race_no = c.text
                     age = get_age(args.year, race_no)
-                else if i == 2:
+                elif i == 2:
                     name_split = c.text.split(" ")
                     first = encode(name_split[0])
                     last = encode(" ".join(name_split[1:]))
-                else if i == 5:
+                elif i == 5:
                     time = c.text
-                else if i == 7:
+                elif i == 7:
                     gender = c.text.split(" ")[0]
 
                 # Assemble the data into CSV form.
