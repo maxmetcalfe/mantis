@@ -9,7 +9,7 @@ import codecs
 
 # Define the driver / url
 url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?results=true&Year={0}&Category=&Club=&StartRecord={1}"
-display = Display(visible=0, size=(1024, 768))
+display = Display(visible=0, size=(200, 200))
 display.start()
 binary = FirefoxBinary("/usr/bin/firefox")
 driver = webdriver.Firefox(firefox_binary=binary)
@@ -33,20 +33,20 @@ for i in range(0, limit, increment):
         print "Unable to locate page " + formatted_url
 
     if driver:
-    	odd = driver.find_elements_by_class_name("rowdd")
-    	even = driver.find_elements_by_class_name("roweven")
-    	rows = odd + even
+        odd = driver.find_elements_by_class_name("rowodd")
+        even = driver.find_elements_by_class_name("roweven")
+        rows = odd + even
         # Loop through rows and cells to gather data
         for r in rows:
-            result = []
+            result = ""
             cells = r.find_elements_by_class_name("cell")
             for c in cells:
                 t=unicode(c.text)
                 t.encode("utf-8")
-                results.append(t)
+                result += t + ","
 
             # Store the result in the results array
-            results.append(result)
+            results.append(result[:-1])
 
     # Wait for a bit to allow the browser to load.
     print "Waiting..."
@@ -62,7 +62,9 @@ csv_file = codecs.open("comrades_" + year + ".csv", "w", encoding="utf-8")
 csv_file.write("rank, race_no, name, nation, club, time, medal, category\n")
 
 for r in results:
-    csv_file.write(r + "\n")
+    line = unicode(r)
+    line.encode("utf-8")
+    csv_file.write(line + "\n")
 
 csv_file.close()
 
