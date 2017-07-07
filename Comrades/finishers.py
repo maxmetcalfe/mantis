@@ -62,19 +62,20 @@ for i in range(0, args.limit, args.increment):
             result = ""
             cells = r.find_elements_by_class_name("cell")
             for i, c in enumerate(cells):
+                text = encode(c.text)
                 if i == 0:
-                    place = c.text.split(" ")[0]
+                    place = text.split(" ")[0]
                 elif i == 1:
-                    race_no = c.text
+                    race_no = text
                     age = get_age(args.year, race_no)
                 elif i == 2:
-                    name_split = c.text.split(" ")
+                    name_split = text.split(" ")
                     first = encode(name_split[0])
                     last = encode(" ".join(name_split[1:]))
                 elif i == 5:
-                    time = c.text
+                    time = text
                 elif i == 7:
-                    gender = c.text.split(" ")[0]
+                    gender = text.split(" ")[0]
 
                 # Assemble the data into CSV form.
                 result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
