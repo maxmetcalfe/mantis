@@ -11,24 +11,41 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--limit', help='The limit for the StartRecord.', type=int)
 parser.add_argument('--year', help='The year of the Comrades race.')
+parser.add_argument('--increment', help='How many results per page.')
 args = parser.parse_args()
 
-# Define the driver / url
+# Define the driver / urls
 url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?results=true&Year={0}&Category=&Club=&StartRecord={1}"
+profile_url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?profile=true&ProfileID={0}"
 display = Display(visible=0, size=(200, 200))
 display.start()
 binary = FirefoxBinary("/usr/bin/firefox")
 driver = webdriver.Firefox(firefox_binary=binary)
 
-# Define increment for result page.
-# How many results on each page.
-increment = 100
+# Get the racer age from the racer profile.
+# This involves another page view.
+def get_age(year, race_no):
+    print "Sourcing age from profile: " + race_no
+    url = profile_url.format(race_no)
+    try:
+        driver.get(url)
+    except:
+        print "Unable to locate page " + url
+
+    if driver:
+        row = driver.find_elements_by_class_name("rowodd")[0]
+        birth_year = r.find_elements_by_class_name("cell")[2]
+
+    return int(year) - int(birth_year)
+
+def encode(text):
+    return t=unicode(c.text).encode("utf-8")
 
 # Initialize empty results array
 results = []
 
 # Loop through result pages
-for i in range(0, args.limit, increment):
+for i in range(0, args.limit, args.increment):
     formatted_url = url.format(args.year, str(i))
     print "Gathering data from: " + formatted_url
     try:
@@ -44,13 +61,26 @@ for i in range(0, args.limit, increment):
         for r in rows:
             result = ""
             cells = r.find_elements_by_class_name("cell")
-            for c in cells:
-                t=unicode(c.text)
-                t.encode("utf-8")
-                result += t + ","
+            for i, c in enumerate(cells):
+                if i == 0:
+                    place = c.text.split(" ")[0]
+                else if i == 1:
+                    race_no = c.text
+                    age = get_age(args.year, race_no)
+                else if i == 2:
+                    name_split = c.text.split(" ")
+                    first = encode(name_split[0])
+                    last = encode(" ".join(name_split[1:]))
+                else if i == 5:
+                    time = c.text
+                else if i == 7:
+                    gender = c.text.split(" ")[0]
+
+                # Assemble the data into CSV form.
+                result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
 
             # Store the result in the results array
-            results.append(result[:-1])
+            results.append(result)
 
     # Wait for a bit to allow the browser to load.
     print "Waiting..."
@@ -62,15 +92,13 @@ print "Writing results to file..."
 print str(len(results)) + " results found."
 csv_file = codecs.open("comrades_" + args.year + ".csv", "w", encoding="utf-8")
 
-# Write header
-csv_file.write("rank, race_no, name, nation, club, time, medal, category\n")
-
+# Write results to the output file
+csv_file.write("place, time, first, last, age, gender\n")
 for r in results:
-    line = unicode(r)
-    line.encode("utf-8")
+    line = encode(r)
     csv_file.write(line + "\n")
 
+# We are done. Close 'em up.
 csv_file.close()
-
 driver.close()
 display.stop()
