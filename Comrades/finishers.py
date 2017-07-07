@@ -67,7 +67,7 @@ for i in range(0, args.limit, args.increment):
                     place = text.split(" ")[0]
                 elif i == 1:
                     race_no = text
-                    age = get_age(args.year, race_no)
+                    age = encode(get_age(args.year, race_no))
                 elif i == 2:
                     name_split = text.split(" ")
                     first = encode(name_split[0])
