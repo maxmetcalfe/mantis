@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import time
 import codecs
+import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--limit', help='The limit for the StartRecord.')
