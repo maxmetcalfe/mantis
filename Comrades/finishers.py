@@ -9,7 +9,7 @@ import codecs
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--limit', help='The limit for the StartRecord.')
+parser.add_argument('--limit', help='The limit for the StartRecord.', type=int)
 parser.add_argument('--year', help='The year of the Comrades race.')
 args = parser.parse_args()
 
