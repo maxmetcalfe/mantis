@@ -60,7 +60,7 @@ for i in range(0, args.limit, increment):
 
 print "Writing results to file..."
 print str(len(results)) + " results found."
-csv_file = codecs.open("comrades_" + year + ".csv", "w", encoding="utf-8")
+csv_file = codecs.open("comrades_" + args.year + ".csv", "w", encoding="utf-8")
 
 # Write header
 csv_file.write("rank, race_no, name, nation, club, time, medal, category\n")
