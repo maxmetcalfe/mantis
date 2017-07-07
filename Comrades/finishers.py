@@ -11,7 +11,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--limit', help='The limit for the StartRecord.', type=int)
 parser.add_argument('--year', help='The year of the Comrades race.')
-parser.add_argument('--increment', help='How many results per page.')
+parser.add_argument('--increment', help='How many results per page.', type=int)
 args = parser.parse_args()
 
 # Define the driver / urls
