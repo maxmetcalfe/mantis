@@ -7,6 +7,11 @@ from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import time
 import codecs
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--limit', help='The limit for the StartRecord.')
+parser.add_argument('--year', help='The year of the Comrades race.')
+args = parser.parse_args()
+
 # Define the driver / url
 url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?results=true&Year={0}&Category=&Club=&StartRecord={1}"
 display = Display(visible=0, size=(200, 200))
@@ -14,18 +19,16 @@ display.start()
 binary = FirefoxBinary("/usr/bin/firefox")
 driver = webdriver.Firefox(firefox_binary=binary)
 
-# Define constants - hardcoded for now.
-# To Do: Move these into Jenkins
-limit = 500
+# Define increment for result page.
+# How many results on each page.
 increment = 100
-year = "2017"
 
 # Initialize empty results array
 results = []
 
 # Loop through result pages
-for i in range(0, limit, increment):
-    formatted_url = url.format("2017", str(i))
+for i in range(0, args.limit, increment):
+    formatted_url = url.format(args.year, str(i))
     print "Gathering data from: " + formatted_url
     try:
         driver.get(formatted_url)
