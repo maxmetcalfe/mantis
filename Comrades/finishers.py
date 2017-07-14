@@ -66,44 +66,45 @@ for i in range(0, args.limit, args.increment):
 
     if driver:
 		odd = get_element(driver, "rowodd", 3)
-        even = get_element(driver, "roweven", 3)
-		if args.row = "even":
-        	rows = even
-		else if args.row = "odd":
+		even = get_element(driver, "roweven", 3)
+		if args.row == "even":
+			rows = even
+		elif args.row == "odd":
 			rows = odd
 		else:
 			rows = odd + even
         # Loop through rows and cells to gather data
-        for r in rows:
-            result = ""
-	    cells = get_element(r, "cell", 3)
-	    i = 0
-            for cell in cells:
-                text = cell.text
+		for r in rows:
+			result = ""
+			cells = get_element(r, "cell", 3)
+			i = 0
+			for cell in cells:
+				text = cell.text
 
-                if i == 0:
-                    place = text.split(" ")[0]
-                elif i == 1:
-                    race_no = text
-		    		profile_id = r.get_attribute('onclick').split("=")[-1].replace("'", "")
-                    age = encode_text(get_age(args.year, profile_id))
-                elif i == 2:
-                    name_split = text.split(" ")
-                    first = encode_text(name_split[0])
-                    last = encode_text(" ".join(name_split[1:]))
-                elif i == 5:
-                    time = text
-                elif i == 7:
-                    gender = text.split(" ")[0]
+				if i == 0:
+					place = text.split(" ")[0]
+				elif i == 1:
+					race_no = text
+					profile_id = r.get_attribute('onclick').split("=")[-1].replace("'", "")
+					age = encode_text(get_age(args.year, profile_id))
+				elif i == 2:
+					name_split = text.split(" ")
+					first = encode_text(name_split[0])
+					last = encode_text(" ".join(name_split[1:]))
+				elif i == 5:
+					time = text
+				elif i == 7:
+					gender = text.split(" ")[0]
 
-                # Assemble the data into CSV form.
+				# Assemble the data into CSV form.
 				print place, time, first, last, age, gender
+				result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
 
 				# Increment the counter
 				i += 1
 
-            # Store the result in the results array
-            results.append(result)
+			# Store the result in the results array
+			results.append(result)
 
 # Write results to an ouput CSV file.
 print "Writing results to file..."
