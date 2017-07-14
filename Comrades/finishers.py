@@ -4,7 +4,6 @@
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-import time
 import codecs
 import argparse
 
@@ -96,13 +95,12 @@ for i in range(0, args.limit, args.increment):
 				elif i == 7:
 					gender = text.split(" ")[0]
 
-				# Assemble the data into CSV form.
-				print place, time, first, last, age, gender
-				result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
-
 				# Increment the counter
 				i += 1
 
+			# Assemble the data into CSV form.
+			print place, time, first, last, age, gender
+			result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
 			# Store the result in the results array
 			results.append(result)
 
