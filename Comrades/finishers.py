@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--limit', help='The limit for the StartRecord.', type=int)
 parser.add_argument('--year', help='The year of the Comrades race.')
 parser.add_argument('--increment', help='How many results per page.', type=int)
+parser.add_argument('--row', help='Which row type odd/even.')
 args = parser.parse_args()
 
 # Define the driver / urls
@@ -22,24 +23,34 @@ display.start()
 binary = FirefoxBinary("/usr/bin/firefox")
 driver = webdriver.Firefox(firefox_binary=binary)
 
+def get_element(parent_element, class_name, attempts):
+	for i in range(attempts):
+		try:
+			element = parent_element.find_elements_by_class_name(class_name)
+			if element:
+				return element
+		except:
+			print "Can't get element. Trying again..."
+
 # Get the racer age from the racer profile.
 # This involves another page view.
-def get_age(year, race_no):
-    print "Sourcing age from profile: " + race_no
-    url = profile_url.format(race_no)
+def get_age(year, profile_id):
+    formatted_url = profile_url.format(profile_id)
+    age_driver = webdriver.Firefox(firefox_binary=binary)
     try:
-        driver.get(url)
+        age_driver.get(formatted_url)
     except:
-        print "Unable to locate page " + url
+        print "Unable to locate page " + formatted_url
 
     if driver:
-        row = driver.find_elements_by_class_name("rowodd")[0]
-        birth_year = r.find_elements_by_class_name("cell")[2]
+		birth_year = get_element(age_driver, "profiledata", 3)[3].text
+		age_driver.close()
+		return int(year) - int(birth_year)
+    else:
+		print "Invalid row."
 
-    return int(year) - int(birth_year)
-
-def encode(text):
-    return unicode(c.text).encode("utf-8")
+def encode_text(text):
+    return unicode(text).encode("utf-8")
 
 # Initialize empty results array
 results = []
@@ -54,41 +65,47 @@ for i in range(0, args.limit, args.increment):
         print "Unable to locate page " + formatted_url
 
     if driver:
-        odd = driver.find_elements_by_class_name("rowodd")
-        even = driver.find_elements_by_class_name("roweven")
-        rows = odd + even
+		odd = get_element(driver, "rowodd", 3)
+        even = get_element(driver, "roweven", 3)
+		if args.row = "even":
+        	rows = even
+		else if args.row = "odd":
+			rows = odd
+		else:
+			rows = odd + even
         # Loop through rows and cells to gather data
         for r in rows:
             result = ""
-            cells = r.find_elements_by_class_name("cell")
-            for i, c in enumerate(cells):
-                text = encode(c.text)
+	    cells = get_element(r, "cell", 3)
+	    i = 0
+            for cell in cells:
+                text = cell.text
+
                 if i == 0:
                     place = text.split(" ")[0]
                 elif i == 1:
                     race_no = text
-                    age = encode(get_age(args.year, race_no))
+		    		profile_id = r.get_attribute('onclick').split("=")[-1].replace("'", "")
+                    age = encode_text(get_age(args.year, profile_id))
                 elif i == 2:
                     name_split = text.split(" ")
-                    first = encode(name_split[0])
-                    last = encode(" ".join(name_split[1:]))
+                    first = encode_text(name_split[0])
+                    last = encode_text(" ".join(name_split[1:]))
                 elif i == 5:
                     time = text
                 elif i == 7:
                     gender = text.split(" ")[0]
 
                 # Assemble the data into CSV form.
-                result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
+				print place, time, first, last, age, gender
+
+				# Increment the counter
+				i += 1
 
             # Store the result in the results array
             results.append(result)
 
-    # Wait for a bit to allow the browser to load.
-    print "Waiting..."
-    time.sleep(2)
-
 # Write results to an ouput CSV file.
-
 print "Writing results to file..."
 print str(len(results)) + " results found."
 csv_file = codecs.open("comrades_" + args.year + ".csv", "w", encoding="utf-8")
