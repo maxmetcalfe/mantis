@@ -37,12 +37,12 @@ def get_age(year, profile_id, attempts):
     formatted_url = profile_url.format(profile_id)
     age_driver = webdriver.Firefox(firefox_binary=binary)
 	for i in range(attempts):
-	    try:
+		try:
 			age_driver.get(formatted_url)
 			birth_year = get_element(age_driver, "profiledata", 3)[3].text
 			age_driver.close()
 			return int(year) - int(birth_year)
-	    except:
+		except:
 		    print "Unable to locate page " + formatted_url
 
 def encode_text(text):
