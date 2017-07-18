@@ -34,8 +34,8 @@ def get_element(parent_element, class_name, attempts):
 # Get the racer age from the racer profile.
 # This involves another page view.
 def get_age(year, profile_id, attempts):
-    formatted_url = profile_url.format(profile_id)
-    age_driver = webdriver.Firefox(firefox_binary=binary)
+	formatted_url = profile_url.format(profile_id)
+	age_driver = webdriver.Firefox(firefox_binary=binary)
 	for i in range(attempts):
 		try:
 			age_driver.get(formatted_url)
@@ -43,7 +43,7 @@ def get_age(year, profile_id, attempts):
 			age_driver.close()
 			return int(year) - int(birth_year)
 		except:
-		    print "Unable to locate page " + formatted_url
+			print "Unable to locate page " + formatted_url
 
 def encode_text(text):
     return unicode(text).encode("utf-8")
