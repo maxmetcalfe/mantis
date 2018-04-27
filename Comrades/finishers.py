@@ -23,27 +23,27 @@ binary = FirefoxBinary("/usr/bin/firefox")
 driver = webdriver.Firefox(firefox_binary=binary)
 
 def get_element(parent_element, class_name, attempts):
-	for i in range(attempts):
-		try:
-			element = parent_element.find_elements_by_class_name(class_name)
-			if element:
-				return element
-		except:
-			print "Can't get element. Trying again..."
+    for i in range(attempts):
+        try:
+            element = parent_element.find_elements_by_class_name(class_name)
+            if element:
+                return element
+        except:
+            print "Can't get element. Trying again..."
 
 # Get the racer age from the racer profile.
 # This involves another page view.
 def get_age(year, profile_id, attempts):
-	formatted_url = profile_url.format(profile_id)
-	age_driver = webdriver.Firefox(firefox_binary=binary)
-	for i in range(attempts):
-		try:
-			age_driver.get(formatted_url)
-			birth_year = get_element(age_driver, "profiledata", 3)[3].text
-			age_driver.close()
-			return int(year) - int(birth_year)
-		except:
-			print "Unable to locate page " + formatted_url
+    formatted_url = profile_url.format(profile_id)
+    age_driver = webdriver.Firefox(firefox_binary=binary)
+    for i in range(attempts):
+        try:
+            age_driver.get(formatted_url)
+            birth_year = get_element(age_driver, "profiledata", 3)[3].text
+            age_driver.close()
+            return int(year) - int(birth_year)
+        except:
+            print "Unable to locate page " + formatted_url
 
 def encode_text(text):
     return unicode(text).encode("utf-8")
@@ -61,45 +61,45 @@ for i in range(0, args.limit, args.increment):
         print "Unable to locate page " + formatted_url
 
     if driver:
-		odd = get_element(driver, "rowodd", 3)
-		even = get_element(driver, "roweven", 3)
-		if args.row == "even":
-			rows = even
-		elif args.row == "odd":
-			rows = odd
-		else:
-			rows = odd + even
+        odd = get_element(driver, "rowodd", 3)
+        even = get_element(driver, "roweven", 3)
+        if args.row == "even":
+            rows = even
+        elif args.row == "odd":
+            rows = odd
+        else:
+            rows = odd + even
         # Loop through rows and cells to gather data
-		for r in rows:
-			result = ""
-			cells = get_element(r, "cell", 3)
-			i = 0
-			for cell in cells:
-				text = cell.text
+        for r in rows:
+            result = ""
+            cells = get_element(r, "cell", 3)
+            i = 0
+            for cell in cells:
+                text = cell.text
 
-				if i == 0:
-					place = text.split(" ")[0]
-				elif i == 1:
-					race_no = text
-					profile_id = r.get_attribute('onclick').split("=")[-1].replace("'", "")
-					age = encode_text(get_age(args.year, profile_id, 3))
-				elif i == 2:
-					name_split = text.split(" ")
-					first = encode_text(name_split[0])
-					last = encode_text(" ".join(name_split[1:]))
-				elif i == 5:
-					time = text
-				elif i == 7:
-					gender = text.split(" ")[0]
+                if i == 0:
+                    place = text.split(" ")[0]
+                elif i == 1:
+                    race_no = text
+                    profile_id = r.get_attribute('onclick').split("=")[-1].replace("'", "")
+                    age = encode_text(get_age(args.year, profile_id, 3))
+                elif i == 2:
+                    name_split = text.split(" ")
+                    first = encode_text(name_split[0])
+                    last = encode_text(" ".join(name_split[1:]))
+                elif i == 5:
+                    time = text
+                elif i == 7:
+                    gender = text.split(" ")[0]
 
-				# Increment the counter
-				i += 1
+                # Increment the counter
+                i += 1
 
-			# Assemble the data into CSV form.
-			print place, time, first, last, age, gender
-			result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
-			# Store the result in the results array
-			results.append(result)
+            # Assemble the data into CSV form.
+            print place, time, first, last, age, gender
+            result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
+            # Store the result in the results array
+            results.append(result)
 
 # Write results to an ouput CSV file.
 print "Writing results to file..."

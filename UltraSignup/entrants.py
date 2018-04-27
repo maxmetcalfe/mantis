@@ -39,7 +39,7 @@ for name,id in race_json_sorted.iteritems():
     try:
         driver.get("https://ultrasignup.com/entrants_event.aspx?did=" + str(id))
         entrant_element = driver.find_element_by_id('ContentPlaceHolder1_lblCount')
-    	msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
+        msg = msg + name + ": " + entrant_element.text + "\n" + "https://ultrasignup.com/entrants_event.aspx?did=" + str(id) + "\n\n"
     except:
         print "Unable to locate element: " + name + "," + str(id)
 
