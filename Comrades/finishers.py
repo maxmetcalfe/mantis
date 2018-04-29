@@ -1,118 +1,158 @@
 # Python script to scrape race results for the Comrades Marathon.
 # Max Metcalfe - 6/26/2017
 
-from pyvirtualdisplay import Display
-from selenium import webdriver
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+import bs4
+import requests
 import codecs
 import argparse
+import sys
+from termcolor import colored
+from datetime import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--limit', help='The limit for the StartRecord.', type=int)
-parser.add_argument('--year', help='The year of the Comrades race.')
-parser.add_argument('--increment', help='How many results per page.', type=int)
-parser.add_argument('--row', help='Which row type odd/even.')
+parser.add_argument("--limit", help="The limit for the StartRecord.", type=int)
+parser.add_argument("--year", help="The year of the Comrades race.")
+parser.add_argument("--increment", help="How many results per page.", type=int, default=100)
+parser.add_argument("--row", help="even or odd rows", default="even")
+parser.add_argument("--local", help="Do you want to test this on a local server", type=bool, default=False)
+parser.add_argument("--out", help="Output file directory", default="./")
 args = parser.parse_args()
 
-# Define the driver / urls
+# Map row types to row class names
+row_classes = {
+	"odd": "rowodd",
+	"even": "roweven"
+}
+
+# Define the urls
 url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?results=true&Year={0}&Category=&Club=&StartRecord={1}"
+url_local = "http://localhost:8080"
 profile_url = "http://results.ultimate.dk/comrades/resultshistory/front/index.php?profile=true&ProfileID={0}"
-display = Display(visible=0, size=(200, 200))
-display.start()
-binary = FirefoxBinary("/usr/bin/firefox")
-driver = webdriver.Firefox(firefox_binary=binary)
 
-def get_element(parent_element, class_name, attempts):
-    for i in range(attempts):
-        try:
-            element = parent_element.find_elements_by_class_name(class_name)
-            if element:
-                return element
-        except:
-            print "Can't get element. Trying again..."
+# If we are running a local server, use url_local
+if args.local:
+	url = url_local
 
-# Get the racer age from the racer profile.
-# This involves another page view.
-def get_age(year, profile_id, attempts):
-    formatted_url = profile_url.format(profile_id)
-    age_driver = webdriver.Firefox(firefox_binary=binary)
-    for i in range(attempts):
-        try:
-            age_driver.get(formatted_url)
-            birth_year = get_element(age_driver, "profiledata", 3)[3].text
-            age_driver.close()
-            return int(year) - int(birth_year)
-        except:
-            print "Unable to locate page " + formatted_url
+# Keep track of which cells contain which data.
+field_cell_indices = {
+	"place": 0,
+	"name": 2,
+	"time": 5,
+	"gender": 7
+}
 
-def encode_text(text):
-    return unicode(text).encode("utf-8")
+# Build a template for an output result
+result_template = {
+	"place": "",
+	"time": "",
+	"first": "",
+	"last": "",
+	"age": "",
+	"gender": ""
+}
 
-# Initialize empty results array
-results = []
+# Keep track of the order of the output fields (and the header)
+fields_ordered = ["place", "time", "first", "last", "age", "gender"]
 
-# Loop through result pages
-for i in range(0, args.limit, args.increment):
-    formatted_url = url.format(args.year, str(i))
-    print "Gathering data from: " + formatted_url
-    try:
-        driver.get(formatted_url)
-    except:
-        print "Unable to locate page " + formatted_url
+# Fetch the age for a racer, returned as a string.
+def get_age(year, profile_id):
+	formatted_url = profile_url.format(profile_id)
+	response = requests.get(formatted_url)
+	soup = bs4.BeautifulSoup(response.text, "html.parser")
+	birth_year = soup.find_all("td", "profiledata")[3].text
 
-    if driver:
-        odd = get_element(driver, "rowodd", 3)
-        even = get_element(driver, "roweven", 3)
-        if args.row == "even":
-            rows = even
-        elif args.row == "odd":
-            rows = odd
-        else:
-            rows = odd + even
-        # Loop through rows and cells to gather data
-        for r in rows:
-            result = ""
-            cells = get_element(r, "cell", 3)
-            i = 0
-            for cell in cells:
-                text = cell.text
+	return str(int(year) - int(birth_year))
 
-                if i == 0:
-                    place = text.split(" ")[0]
-                elif i == 1:
-                    race_no = text
-                    profile_id = r.get_attribute('onclick').split("=")[-1].replace("'", "")
-                    age = encode_text(get_age(args.year, profile_id, 3))
-                elif i == 2:
-                    name_split = text.split(" ")
-                    first = encode_text(name_split[0])
-                    last = encode_text(" ".join(name_split[1:]))
-                elif i == 5:
-                    time = text
-                elif i == 7:
-                    gender = text.split(" ")[0]
+# Get a result from a result row
+def get_result_from_row(row):
+	cells = row.find_all("td")
 
-                # Increment the counter
-                i += 1
+	result = result_template.copy()
 
-            # Assemble the data into CSV form.
-            print place, time, first, last, age, gender
-            result = place + "," + time + "," + first + "," + last + "," + age + "," + gender
-            # Store the result in the results array
-            results.append(result)
+	i = 0
+	for cell in cells:
 
-# Write results to an ouput CSV file.
-print "Writing results to file..."
-print str(len(results)) + " results found."
-csv_file = codecs.open("comrades_" + args.year + ".csv", "w", encoding="utf-8")
+		# Finish place
+		if i == field_cell_indices["place"]:
+			result["place"] = cell.text.split(" ")[0]
 
-# Write results to the output file
-csv_file.write("place, time, first, last, age, gender\n")
-for r in results:
-    line = encode(r)
-    csv_file.write(line + "\n")
+		# Name
+		if i == field_cell_indices["name"]:
+			name_split = cell.text.split(" ")
+			result["first"] = name_split[0]
+			result["last"] = " ".join(name_split[1:])
 
-# We are done. Close 'em up.
-csv_file.close()
-driver.close()
-display.stop()
+		# Time
+		if i == field_cell_indices["time"]:
+			result["time"] = cell.text
+
+		# Gender
+		if i == field_cell_indices["gender"]:
+			result["gender"] = cell.text.split(" ")[0]
+
+		# Increment cell number
+		i += 1
+
+	# Age requires an additional request to the profile page
+	profile_id = row.attrs["onclick"].split("=")[-1].replace("'", "")
+	result["age"] = get_age(args.year, profile_id)
+
+	return result
+
+# Write an array of results to an output CSV file.
+def write_file(filename, results):
+	header = str(fields_ordered).replace("'", "").replace("[", "").replace("]", "") + "\n"
+	csv_file = codecs.open(filename, "w", encoding="utf-8")
+	csv_file.write(header)
+
+	for result in results:
+		string_result = ""
+		for field in fields_ordered:
+			string_result = string_result + result[field] + ","
+		csv_file.write(string_result + "\n")
+
+	# We are done. Close 'em up.
+	csv_file.close()
+
+# The main function
+def main():
+
+	startTime = datetime.now()
+	total_results = 0
+
+	if args.row not in row_classes.keys():
+		print colored("Please provide a valid row type.", "red")
+		sys.exit(1)
+	else:
+		row_class = row_classes[args.row]
+
+	# Loop through result pages
+	for i in range(0, args.limit, args.increment):
+
+		# Initialize empty results array
+		results = []
+
+		formatted_url = url.format(args.year, str(i))
+		response  = requests.get(formatted_url)
+
+		if response.status_code != 200:
+			print colored("Error loading page.", "red")
+
+		if response.status_code == 200:
+			soup = bs4.BeautifulSoup(response.text, "html.parser")
+			rows = soup.find_all("tr", row_class)
+
+			for row in rows:
+				results.append(get_result_from_row(row))
+		
+		total_results = total_results + len(results)
+		filename = args.out + "/" + "comrades_" + args.year + "-" + str(i) + "-" + args.row + ".csv"
+		write_file(filename, results)
+	
+	print colored("- Done.", "green")
+	print colored("- Pages loaded: " + str(i + 1) + ".", "green")
+	print colored("- Results logged: " + str(total_results) + ".", "green")
+	print colored("- Duration: " + str(datetime.now() - startTime) + ".", "green")
+	print colored("- Files writeen to " + args.out, "green")
+
+main()
