@@ -133,6 +133,7 @@ def main():
 		results = []
 
 		formatted_url = url.format(args.year, str(i))
+		print colored("Collecting data from: " + formatted_url, "blue")
 		response  = requests.get(formatted_url)
 
 		if response.status_code != 200:
