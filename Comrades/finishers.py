@@ -109,7 +109,7 @@ def write_file(filename, results):
 		string_result = ""
 		for field in fields_ordered:
 			string_result = string_result + result[field] + ","
-		csv_file.write(string_result + "\n")
+		csv_file.write(string_result[:-1] + "\n")
 
 	# We are done. Close 'em up.
 	csv_file.close()
