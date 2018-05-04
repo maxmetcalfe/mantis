@@ -36,16 +36,6 @@ if args.local:
 
 target_fields = args.fields.split(",")
 
-# Build a template for an output result
-result_template = {
-	"place": "",
-	"time": "",
-	"first": "",
-	"last": "",
-	"age": "",
-	"gender": ""
-}
-
 # Fetch the age for a racer, returned as a string.
 def get_age(year, profile_id):
 	formatted_url = profile_url.format(profile_id)
@@ -59,7 +49,7 @@ def get_age(year, profile_id):
 def get_result_from_row(row, target_fields):
 	cells = row.find_all("td")
 
-	result = result_template.copy()
+	result = {}
 
 	for target_field in target_fields:
 		field_config = fields[target_field]
