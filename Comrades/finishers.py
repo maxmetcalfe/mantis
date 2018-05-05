@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--limit", help="The limit for the StartRecord.", type=int)
 parser.add_argument("--year", help="The year of the Comrades race.")
 parser.add_argument("--increment", help="How many results per page.", type=int, default=100)
+parser.add_argument("--startRecord", help="Record number to start from.", type=int, default=0)
 parser.add_argument("--row", help="even or odd rows", default="even")
 parser.add_argument("--fields", help="comma-separated list of fields, in order", default="place,first,last,time")
 parser.add_argument("--local", help="Do you want to test this on a local server", type=bool, default=False)
@@ -84,8 +85,12 @@ def main():
 	else:
 		row_class = row_classes[args.row]
 
+	if args.startRecord % args.increment > 0:
+		print colored("Please provide a valid startRecord.", "red")
+		sys.exit(1)
+
 	# Loop through result pages
-	for i in range(0, args.limit, args.increment):
+	for i in range(args.startRecord, args.limit, args.increment):
 
 		# Initialize empty results array
 		results = []
