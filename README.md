@@ -9,8 +9,8 @@ This script runs daily to gather the count of entrants for a set list of races f
 
 ## Comrades / Results
 
-This script scrapes the results from a Comrades Marathon race for a particular year. It is currently up and running on a Jenkins instance and can be used to fetch data for future years.
+This script scrapes the results from a Comrades Marathon race for a particular year.
 
-I will post a location of historical result pulls soon.
+You can see an archive of the scrapped data (so far) [here](https://maxmetcalfe.github.io/comrades-results/).
 
-For all issues or access to the data, please file an issue.
+For all issues with the scripts or the data, please file an issue.
