@@ -24,7 +24,13 @@ def age(cell, row, args):
     soup = bs4.BeautifulSoup(response.text, "html.parser")
     birth_year = soup.find_all("td", "profiledata")[3].text
 
-    return str(int(args.year) - int(birth_year))
+    # Let's make sure we get a valid birth_year before doing the math.
+    try:
+        age = str(int(args.year) - int(birth_year))
+    except:
+        age = ""
+
+    return age
 
 def default(cell, row, args):
     return cell.text
